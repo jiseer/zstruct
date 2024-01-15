@@ -3,7 +3,7 @@ import { BinarySearchTree, isBST, randomNum } from "../src";
 describe("BinarySearchTree", () => {
   test("BinarySearchTree push insert remove", () => {
     const bsTree = new BinarySearchTree();
-    for(let i = 0; i < 50; i++) {
+    for(let i = 0; i < 100; i++) {
       bsTree.insert(randomNum(1,100));
     }
     expect(isBST(bsTree.getRoot())).toBeTruthy();

@@ -1,14 +1,14 @@
-import { TreeNode, NullableTreeNode } from './common/node';
+import { TreeNode, NullableTreeNode } from "./common/node";
 import {
   Compare,
   CompareFn,
   defaultCompare,
   greaterThanOrEqual,
   lessThanOrEqual,
-} from './common/util';
+} from "./common/util";
 
 interface OrderCallback<T> {
-  (node: TreeNode<T>['item']): void;
+  (node: TreeNode<T>["item"]): void;
 }
 
 export class BinarySearchTree<T> {
@@ -26,28 +26,26 @@ export class BinarySearchTree<T> {
   }
 
   insert(item: T) {
-    const node = new TreeNode(item);
-    if (this.root) {
-      this.insertNode(this.root, item);
-    } else {
-      this.root = node;
-    }
+    this.root = this.root
+      ? this.insertNode(this.root, item)
+      : new TreeNode(item);
   }
 
-  protected insertNode(node: TreeNode<T>, item: T) {
-    if (node) {
-      if (this.compareFn(item, node.item) === Compare.LESS_THAN) {
-        if (node.left) {
-          this.insertNode(node.left, item);
-        } else {
-          node.left = new TreeNode(item);
-        }
-      } else if (!node.right) {
-        node.right = new TreeNode(item);
-      } else {
-        this.insertNode(node.right, item);
-      }
+  protected insertNode(
+    node: TreeNode<T>,
+    item: T,
+    callback?: { (node: TreeNode<T>): TreeNode<T> }
+  ) {
+    if (this.compareFn(item, node.item) === Compare.LESS_THAN) {
+      node.left = node.left
+        ? this.insertNode(node.left, item)
+        : new TreeNode(item);
+    } else {
+      node.right = node.right
+        ? this.insertNode(node.right, item)
+        : new TreeNode(item);
     }
+    return callback ? callback(node) : node;
   }
 
   inOrderTraversal(callback: OrderCallback<T>) {
@@ -146,30 +144,29 @@ export class BinarySearchTree<T> {
   protected removeNode(
     node: NullableTreeNode<T>,
     item: T,
-    ctx: { removed?: boolean } = {}
+    ctx: { removed?: boolean } = {},
+    callback?: { (node: TreeNode<T>): TreeNode<T> }
   ): NullableTreeNode<T> {
     if (node) {
       if (this.compareFn(item, node.item) === Compare.LESS_THAN) {
         node.left = this.removeNode(node.left, item, ctx);
-        return node;
       } else if (this.compareFn(item, node.item) === Compare.GREATER_THAN) {
         node.right = this.removeNode(node.right, item, ctx);
-        return node;
       } else {
         ctx.removed = true;
         if (!(node.left && node.right)) {
-          return null;
-        }
-        if (!node.left) {
-          return node.right;
+          node = null;
+        } else if (!node.left) {
+          node = node.right;
         } else if (!node.right) {
-          return node.left;
+          node = node.left;
+        } else {
+          const n = this.findMinNode(node.right);
+          node.item = n!.item;
+          node!.right = this.removeNode(node.right, n!.item);
         }
-        const n = this.findMinNode(node.right);
-        node.item = n!.item;
-        node!.right = this.removeNode(node.right, n!.item);
-        return node;
       }
+      return callback && node ? callback(node) : node;
     }
   }
 }

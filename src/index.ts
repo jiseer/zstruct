@@ -7,6 +7,7 @@ export { CircularLinkedList } from "./circular-linked-list";
 export { MinHeap, MaxHeap, isMinHeap, isMaxHeap } from "./heap";
 export { SortedLinkedListQueue } from "./sorted-linked-list-queue";
 export { BinarySearchTree, isBST } from "./binary-search-tree";
+export { AVLTree, isAVLTree } from "./avl-tree";
 export { Graph } from "./graph";
 
 export { randomNum } from "./common/util";
