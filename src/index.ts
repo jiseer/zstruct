@@ -10,4 +10,5 @@ export { BinarySearchTree, isBST } from "./binary-search-tree";
 export { AVLTree, isAVLTree } from "./avl-tree";
 export { Graph } from "./graph";
 
+export { ArrayLike } from './common/ArrayLike';
 export { randomNum } from "./common/util";
